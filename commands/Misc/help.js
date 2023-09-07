@@ -1,5 +1,4 @@
 const Discord = require('discord.js');
-const prefix = require('../../config.json').prefix;
 
 const ErrorEmbed = new Discord.EmbedBuilder()
     .setColor('Blurple')
