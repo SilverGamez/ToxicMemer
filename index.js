@@ -5,32 +5,34 @@ const fs = require('fs');
 const Config = require('./config.json');
 
 // Variables \\
-const intents = Discord.GatewayIntentBits;
 const client = new Discord.Client({
-    intents: [
-        intents.Guilds,
-        intents.GuildMessages,
-        intents.MessageContent
-    ]
+    intents: Object.keys(Discord.GatewayIntentBits).map((intent) => {
+        return Discord.GatewayIntentBits[intent]
+    })
 });
 
 // Command Handler \\
 
 client.commands = new Discord.Collection();
+client.aliases = new Discord.Collection();
 
-const commandsPath = path.join(__dirname, 'commands');
-const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+fs.readdirSync('./commands').forEach(dir => {
+    const commandFiles = fs.readdirSync(`./commands/${dir}`).filter(file => file.endsWith('.js'));
 
-for (const file of commandFiles) {
-    const filePath = path.join(commandsPath, file);
-    const command = require(filePath);
+    for (const file of commandFiles) {
+        const command = require(`./commands/${dir}/${file}`);
 
-    if ('data' in command && 'run' in command) {
-        client.commands.set(command.data.name, command);
-    } else {
-        console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "run" property.`)
+        if ('data' in command && 'run' in command) {
+            client.commands.set(command.data.name, command);
+        } else {
+            console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "run" property.`)
+        }
+
+        if (command.data.aliases.length) {
+            command.data.aliases.forEach(alias => client.aliases.set(alias, command.data.name));
+        }
     }
-}
+});
 
 // Event Handler \\
 

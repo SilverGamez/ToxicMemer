@@ -4,6 +4,9 @@ module.exports = {
     data: {
         name: "avatar",
         description: "Shows a user avatar",
+        usage: "avatar [@mention]",
+        aliases: [],
+        category: "Misc",
         botdevonly: false
     },
     run: async (message, args, client) => {

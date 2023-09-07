@@ -4,6 +4,9 @@ module.exports = {
     data: {
         name: "",
         description: "",
+        usage: "",
+        aliases: [],
+        category: "",
         botdevonly: false
     },
     run: async(message, args, client) => {

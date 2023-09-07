@@ -17,15 +17,19 @@ module.exports = {
         const cmd = args.shift().toLowerCase();
 
         if (cmd.length == 0) return;
+
         let command = client.commands.get(cmd);
+        if (!command) command = client.commands.get(client.aliases.get(cmd));
 
-        if (command.data.BotDevOnly && message.author.id !== Config.botdevid) return message.channel.send("You don't have access to this command.");
+        if (command) {
+            try {
+                if (command.data.BotDevOnly && message.author.id !== Config.botdevid) return message.channel.send("You don't have access to this command.");
 
-        try {
-            command.run(message, args, client, db);
-        } catch (error) {
-            console.log(error);
-            message.channel.send("Something went wrong. Try again later.");
+                command.run(message, args, client, db);
+            } catch (error) {
+                console.log(error);
+                message.channel.send("Something went wrong. Try again later.");
+            }
         }
     }
 }
