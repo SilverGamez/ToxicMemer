@@ -4,9 +4,6 @@ Economy
     Get small, medium, big fishes.
     Bigger the fish, more the money.
 
-> shop
-    Shop for others for money. 
-
 > dig
     Dig for money.
 
