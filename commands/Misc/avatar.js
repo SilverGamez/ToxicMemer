@@ -5,7 +5,7 @@ module.exports = {
         name: "avatar",
         description: "Shows a user avatar",
         usage: "avatar [@mention]",
-        aliases: [],
+        aliases: ['av'],
         category: "Misc",
         botdevonly: false
     },
@@ -13,22 +13,17 @@ module.exports = {
         let target = message.mentions.members.first();
         if (!target) target = message.member;
 
+        let name = target.user.globalName;
+        if (!name) name = target.user.username;
+
         const avatar = target.user.displayAvatarURL({
             dynamic: true,
             format: 'png'
         });
 
-        const embed = new Discord.EmbedBuilder()
-            .setTitle(`${target.user.username}'s avatar`)
-            .setImage(avatar)
-            .setFooter({
-                text: message.guild.name,
-                iconURL: message.guild.iconURL()
-            })
-            .setColor('Blurple')
-
-        message.channel.send({
-            embeds: [embed]
+        client.createEmbed(message, {
+            title: `${name}'s avatar`,
+            image: avatar
         });
     }
 }

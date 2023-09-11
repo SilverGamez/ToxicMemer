@@ -1,0 +1,36 @@
+{
+	"New command": {
+		"prefix": "!command",
+		"body": [
+		  "const Discord = require('discord.js');",
+		  "",
+		  "module.exports = {",
+		  "    data: {",
+		  "        name: \"\",",
+		  "        description: \"\",",
+		  "        usage: \"\",",
+		  "        aliases: [],",
+		  "        category: \"\",",
+		  "        botdevonly: false",
+		  "    },",
+		  "    run: async(message, args, client, db) => {",
+		  "        ",
+		  "    }",
+		  "}"
+		],
+		"description": "New command"
+	  },
+	  "New event": {
+		"prefix": "!event",
+		"body": [
+		  "module.exports = {",
+		  "    name: '',",
+		  "    once: false,",
+		  "    run: async (client) => {",
+		  "        ",
+		  "    }",
+		  "}"
+		],
+		"description": "New event"
+	  }
+}

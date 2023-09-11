@@ -2,6 +2,7 @@
 const Discord = require('discord.js');
 const path = require('path');
 const fs = require('fs');
+const QuickDB = require('quick.db').QuickDB;
 const Config = require('./config.json');
 
 // Variables \\
@@ -16,6 +17,12 @@ const client = new Discord.Client({
 client.commands = new Discord.Collection();
 client.aliases = new Discord.Collection();
 
+client.createEmbed = require('./Functions/createEmbed');
+client.numberComma = require('./Functions/numberToComma');
+
+client.config = Config;
+client.db = new QuickDB();
+
 fs.readdirSync('./commands').forEach(dir => {
     const commandFiles = fs.readdirSync(`./commands/${dir}`).filter(file => file.endsWith('.js'));
 
@@ -25,12 +32,12 @@ fs.readdirSync('./commands').forEach(dir => {
         if ('data' in command && 'run' in command) {
             client.commands.set(command.data.name, command);
         } else {
-            console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "run" property.`)
+            console.log(`[WARNING] The command at ${command} is missing a required "data" or "run" property.`)
         }
 
         if (command.data.aliases.length) {
             command.data.aliases.forEach(alias => client.aliases.set(alias, command.data.name));
-        }
+        } 
     }
 });
 
@@ -44,9 +51,9 @@ for (const file of eventsFiles) {
     const event = require(filePath);
 
     if (event.once) {
-        client.once(event.name, (...args) => event.run(...args, client));
+        client.once(event.name, (...args) => event.run(...args, client, client.db));
     } else {
-        client.on(event.name, (...args) => event.run(...args, client));
+        client.on(event.name, (...args) => event.run(...args, client, client.db));
     }
 }
 

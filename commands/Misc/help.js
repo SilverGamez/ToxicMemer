@@ -1,5 +1,4 @@
 const Discord = require('discord.js');
-
 const ErrorEmbed = new Discord.EmbedBuilder()
     .setColor('Blurple')
     .setDescription(`**Something went wrong, here are some possible solutions.**
@@ -18,34 +17,66 @@ module.exports = {
         category: "Misc",
         botdevonly: false
     },
-    run: async (message, args, client) => {
+    run: async (message, args, client, db) => {
         if (!args[0]) {
-            const embeds = {
-                Misc: new Discord.EmbedBuilder().setColor('Blurple').setTitle('Misc commands')
+            let commands = client.commands;
+
+            let prefix = await db.get(`${message.guild.id}.prefix`) || client.config.prefix
+
+            let emx = new Discord.EmbedBuilder()
+                .setColor("Blurple")
+                .setAuthor({
+                    name: `Do ${prefix}help <command name> for more information about a command.`
+                })
+                .setFooter({
+                    text: message.guild.name,
+                    iconURL: message.guild.iconURL()
+                })
+
+            const backPage = new Discord.ButtonBuilder()
+                .setCustomId('help_back')
+                .setStyle(Discord.ButtonStyle.Primary)
+                .setLabel('⬅️')
+
+            const nextPage = new Discord.ButtonBuilder()
+                .setCustomId('help_next')
+                .setStyle(Discord.ButtonStyle.Primary)
+                .setLabel('➡️')
+
+            let com = {};
+
+            commands.forEach(comm => {
+                let category = comm.data.category || "Unknown";
+                let name = comm.data.name;
+
+                if (!com[category]) {
+                    com[category] = [];
+                }
+
+                com[category].push(name);
+            });
+
+            for (const [key, value] of Object.entries(com)) {
+                let category = key.charAt(0).toUpperCase() + key.slice(1);
+                let desc = value.sort().map((x) => `\`➣ ${x}\`\n`).join('');
+
+                emx.addFields({
+                    name: `${category}`,
+                    value: desc + "\n"
+                });
             }
 
-            let commands = client.commands;
-            commands = Array.from(commands).map(([name, value]) => ({
-                name,
-                value
-            }));
-
-            commands.forEach(command => {
-                embeds[command.value.data.category].addFields({
-                    name: "➣ " + command.name,
-                    value: command.value.data.description + "\n"
-                });
+            const reponse = await message.channel.send({
+                embeds: [emx]
             });
-            let newEmbeds = [];
-            newEmbeds = Object.values(embeds)
 
-            message.channel.send({
-                embeds: newEmbeds
-            });
+
         } else {
             const command = await client.commands.get(args[0]);
 
-            if (!command) return message.channel.send({ embeds: [ErrorEmbed] });
+            if (!command) return message.channel.send({
+                embeds: [ErrorEmbed]
+            });
 
             let aliases = command.data.aliases
             if (Array.isArray(aliases) && aliases.length) {
@@ -53,6 +84,9 @@ module.exports = {
             } else {
                 aliases = 'There is no aliases for this command'
             }
+
+            let botdevonly = 'false';
+            if (command.data.botdevonly) botdevonly = 'true';
 
             const embed = new Discord.EmbedBuilder()
                 .setTitle(`Help for ${command.data.name}`)
@@ -64,10 +98,13 @@ module.exports = {
                     value: command.data.description || 'There is no description for this command'
                 }, {
                     name: 'Usage',
-                    value: command.data.usage || 'There is no usage for this command'
+                    value: command.data.usage + '\n**<required> [optional]**' || 'There is no usage for this command\n**<required> [optional]**'
                 }, {
                     name: 'Aliases',
                     value: aliases
+                }, {
+                    name: 'Botdev only',
+                    value: botdevonly
                 })
                 .setColor('Blurple')
                 .setFooter({

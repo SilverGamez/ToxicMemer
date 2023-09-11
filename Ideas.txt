@@ -1,0 +1,27 @@
+Economy
+> fish
+    Fish for money.
+    Get small, medium, big fishes.
+    Bigger the fish, more the money.
+
+> shop
+    Shop for others for money. 
+
+> dig
+    Dig for money.
+
+> hunt
+    Hunt for money.
+
+> postmeme
+    Post memes for money.
+    Get money from ads.
+
+> buy
+    Buy items.
+
+> sell
+    Sell items.
+
+> inventory
+    View your items.
