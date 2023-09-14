@@ -17,7 +17,6 @@ module.exports = {
         client.createEmbed(message, {
             title: 'Shop',
             description: description,
-            authorName: `${prefix}buy <item_name>`
         });
     }
 }

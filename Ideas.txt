@@ -14,11 +14,5 @@ Economy
     Post memes for money.
     Get money from ads.
 
-> buy
-    Buy items.
-
 > sell
     Sell items.
-
-> inventory
-    View your items.

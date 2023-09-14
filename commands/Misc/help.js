@@ -33,16 +33,6 @@ module.exports = {
                     iconURL: message.guild.iconURL()
                 })
 
-            const backPage = new Discord.ButtonBuilder()
-                .setCustomId('help_back')
-                .setStyle(Discord.ButtonStyle.Primary)
-                .setLabel('⬅️')
-
-            const nextPage = new Discord.ButtonBuilder()
-                .setCustomId('help_next')
-                .setStyle(Discord.ButtonStyle.Primary)
-                .setLabel('➡️')
-
             let com = {};
 
             commands.forEach(comm => {
@@ -66,11 +56,9 @@ module.exports = {
                 });
             }
 
-            const reponse = await message.channel.send({
+            message.channel.send({
                 embeds: [emx]
             });
-
-
         } else {
             const command = await client.commands.get(args[0]);
 

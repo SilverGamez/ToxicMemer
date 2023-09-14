@@ -3,6 +3,7 @@ const Discord = require('discord.js');
 module.exports = (message, args) => {
     this.message = message;
 
+    this.returnEmbed = args.returnEmbed || false;
     this.description = args.description || null;
     this.content = args.content || null;
     this.title = args.title || null;
@@ -27,5 +28,9 @@ module.exports = (message, args) => {
         })
         .setImage(this.image)
 
-    return this.message.channel.send({ content: this.content, embeds: [embed] });
+    if (this.returnEmbed == true) {
+        return embed;
+    } else {
+        return this.message.channel.send({ content: this.content, embeds: [embed] });
+    }
 }
